@@ -1,21 +1,43 @@
+import 'dart:convert';
+import 'package:gare_connect/src/model/stop_area_model.dart';
+import 'line_model.dart';
 
-//TODO: factory sur pto pour le type generique
-class Pto<T> {
+Pto ptoFromJson(String str) => Pto.fromJson(json.decode(str));
+
+String ptoToJson(Pto data) => json.encode(data.toJson());
+
+class Pto {
   Pagination pagination;
   List<FeedPublisher> feedPublishers;
-  List<dynamic> disruptions;
   Context context;
-  List<T> embeddedObject;
+  List<StopArea>? stopAreas;
+  List<Line>? lines;
   List<Link> links;
 
   Pto({
     required this.pagination,
     required this.feedPublishers,
-    required this.disruptions,
     required this.context,
-    required this.embeddedObject,
+    this.stopAreas,
+    this.lines,
     required this.links,
   });
+
+  factory Pto.fromJson(Map<String, dynamic> json) => Pto(
+    pagination: Pagination.fromJson(json["pagination"]),
+    feedPublishers: List<FeedPublisher>.from(json["feed_publishers"].map((x) => FeedPublisher.fromJson(x))),
+    context: Context.fromJson(json["context"]),
+    stopAreas: json["stop_areas"] == null ? [] : List<StopArea>.from(json["stop_areas"]!.map((x) => StopArea.fromJson(x))),
+    lines: json["lines"] == null ? [] : List<Line>.from(json["lines"]!.map((x) => Line.fromJson(x))),
+    links: List<Link>.from(json["links"].map((x) => Link.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "pagination": pagination.toJson(),
+    "feed_publishers": List<dynamic>.from(feedPublishers.map((x) => x.toJson())),
+    "context": context.toJson(),
+    "links": List<dynamic>.from(links.map((x) => x.toJson())),
+  };
 }
 
 class Context {

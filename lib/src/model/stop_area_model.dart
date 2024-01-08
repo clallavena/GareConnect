@@ -1,14 +1,13 @@
 import 'package:gare_connect/src/model/code_model.dart';
 import 'package:gare_connect/src/model/coord_model.dart';
 
-class StopArea {
+class StopArea{
   String id;
   String name;
   List<Code> codes;
   String timezone;
   String label;
   Coord coord;
-  List<dynamic> links;
   List<AdministrativeRegion> administrativeRegions;
 
   StopArea({
@@ -18,7 +17,6 @@ class StopArea {
     required this.timezone,
     required this.label,
     required this.coord,
-    required this.links,
     required this.administrativeRegions,
   });
 
@@ -29,7 +27,6 @@ class StopArea {
     timezone: json["timezone"],
     label: json["label"],
     coord: Coord.fromJson(json["coord"]),
-    links: List<dynamic>.from(json["links"].map((x) => x)),
     administrativeRegions: List<AdministrativeRegion>.from(json["administrative_regions"].map((x) => AdministrativeRegion.fromJson(x))),
   );
 
@@ -40,7 +37,6 @@ class StopArea {
     "timezone": timezone,
     "label": label,
     "coord": coord.toJson(),
-    "links": List<dynamic>.from(links.map((x) => x)),
     "administrative_regions": List<dynamic>.from(administrativeRegions.map((x) => x.toJson())),
   };
 }
