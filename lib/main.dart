@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gare_connect/src/api_controller.dart';
+import 'package:gare_connect/src/model/pto_model.dart';
+import 'package:gare_connect/src/model/stop_area_model.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:developer' as developer;
 
 Future main() async{
   await dotenv.load(fileName: ".env");
@@ -50,19 +56,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final ApiController _apiController = ApiController(); // Initialize the ApiController
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  List<StopArea> result = []; // Variable to store the result from the API
+
+  @override
+  void initState() {
+    super.initState();
+    //_fetchStopAreas(); // Call the API when the widget is initialized
   }
 
+  Future<void> _fetchStopAreas() async {
+    try {
+      final Pto? stopAreas = await _apiController.getStopAreas(http.Client());
+
+      if (stopAreas != null && stopAreas.stopAreas != null) {
+        setState(() {
+          result = stopAreas.stopAreas!;
+        });
+      } else {
+        setState(() {
+          result = [];
+          developer.log('result is empty');
+        });
+      }
+    } catch (e) {
+      setState(() {
+        developer.log('[ERROR] $e');
+        result = []; // Handle API call errors
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -98,19 +122,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'API Result',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Expanded(
+                child: result.isNotEmpty ? ListView.builder(
+                    itemCount: result.length,
+                    itemBuilder: (context, index) {
+                      final stopArea = result[index];
+                      return ListTile(
+                        title: Text(stopArea.name),
+                        subtitle: Text(stopArea.label),
+                      );
+                    },
+                )
+            :const Center(
+                  child: Text('No data to display.'),
+                ),
             ),
+            ElevatedButton(onPressed: _fetchStopAreas, child: const Text('Fetch stop Area')),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

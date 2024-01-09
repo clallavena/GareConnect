@@ -8,7 +8,7 @@ class StopArea{
   String timezone;
   String label;
   Coord coord;
-  List<AdministrativeRegion> administrativeRegions;
+  List<AdministrativeRegion?> administrativeRegions;
 
   StopArea({
     required this.id,
@@ -27,7 +27,7 @@ class StopArea{
     timezone: json["timezone"],
     label: json["label"],
     coord: Coord.fromJson(json["coord"]),
-    administrativeRegions: List<AdministrativeRegion>.from(json["administrative_regions"].map((x) => AdministrativeRegion.fromJson(x))),
+    administrativeRegions: json["administrative_regions"] == null ? [] : List<AdministrativeRegion>.from(json["administrative_regions"]!.map((x) => AdministrativeRegion.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -37,8 +37,12 @@ class StopArea{
     "timezone": timezone,
     "label": label,
     "coord": coord.toJson(),
-    "administrative_regions": List<dynamic>.from(administrativeRegions.map((x) => x.toJson())),
   };
+
+  @override
+  String toString() {
+    return 'StopArea{name: $name}';
+  }
 }
 
 class AdministrativeRegion {
