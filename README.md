@@ -2,7 +2,8 @@
 
 Connect the "Gare"s of France
 
-## To contribute and/or run the project in local
+## Contribute
+### To contribute and/or run the project in local
 
 First create a account (free), you'll have to ask it here: https://numerique.sncf.com/startup/api/token-developpeur/.
 
