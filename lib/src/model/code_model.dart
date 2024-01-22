@@ -1,5 +1,7 @@
+import 'enum_values.dart';
+
 class Code {
-  String type;
+  CodeType type;
   String value;
 
   Code({
@@ -8,12 +10,24 @@ class Code {
   });
 
   factory Code.fromJson(Map<String, dynamic> json) => Code(
-    type: json["type"],
+    type: codeTypeValues.map[json["type"]]!,
     value: json["value"],
   );
 
   Map<String, dynamic> toJson() => {
-    "type": type,
+    "type": codeTypeValues.reverse[type],
     "value": value,
   };
 }
+
+enum CodeType {
+  SECONDARY_ID,
+  SOURCE,
+  UIC
+}
+
+final codeTypeValues = EnumValues({
+  "secondary_id": CodeType.SECONDARY_ID,
+  "source": CodeType.SOURCE,
+  "uic": CodeType.UIC
+});

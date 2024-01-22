@@ -42,4 +42,20 @@ void main(){
       expect(apiController.getStopAreas(client), throwsException);
     });
   });
+
+  group('GetStopAreasByExactName', () {
+    final client = MockClient();
+    final apiController = ApiController();
+
+    test('getStopAreasByExactName - Successful Response', () async {
+      // Simuler une réponse HTTP réussie
+      when(client.get(any, headers: anyNamed('headers'))).thenAnswer(
+            (_) async => http.Response(responseJson, 200),
+      );
+
+      // Vérifier que le résultat est du type Pto et contient les données décodées
+      expect(await apiController.getStopAreasByExactName(client, "Annecy"), isA<Pto>());
+      //expect(result?.example, "data");
+    });
+  });
 }

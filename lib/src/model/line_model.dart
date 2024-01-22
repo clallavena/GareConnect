@@ -14,7 +14,7 @@ class Line {
   List<dynamic> codes;
   List<AlMode> physicalModes;
   AlMode commercialMode;
-  List<Route> routes;
+  List<Route>? routes;
   Network network;
   String openingTime;
   String closingTime;
@@ -30,7 +30,7 @@ class Line {
     required this.codes,
     required this.physicalModes,
     required this.commercialMode,
-    required this.routes,
+    this.routes,
     required this.network,
     required this.openingTime,
     required this.closingTime,
@@ -47,7 +47,7 @@ class Line {
     codes: List<dynamic>.from(json["codes"].map((x) => x)),
     physicalModes: List<AlMode>.from(json["physical_modes"].map((x) => AlMode.fromJson(x))),
     commercialMode: AlMode.fromJson(json["commercial_mode"]),
-    routes: List<Route>.from(json["routes"].map((x) => Route.fromJson(x))),
+    routes: json["routes"] == null ? [] : List<Route>.from(json["routes"]!.map((x) => Route.fromJson(x))),
     network: Network.fromJson(json["network"]),
     openingTime: json["opening_time"],
     closingTime: json["closing_time"],
@@ -64,7 +64,7 @@ class Line {
     "codes": List<dynamic>.from(codes.map((x) => x)),
     "physical_modes": List<dynamic>.from(physicalModes.map((x) => x.toJson())),
     "commercial_mode": commercialMode.toJson(),
-    "routes": List<dynamic>.from(routes.map((x) => x.toJson())),
+    "routes": routes == null ? [] : List<dynamic>.from(routes!.map((x) => x.toJson())),
     "network": network.toJson(),
     "opening_time": openingTime,
     "closing_time": closingTime,
