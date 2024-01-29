@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gare_connect/src/api_controller.dart';
+import 'package:gare_connect/src/controllers/stop_areas_controller.dart';
 import 'package:gare_connect/src/model/pto_model.dart';
 
 import 'package:http/http.dart' as http;
@@ -21,7 +21,7 @@ void main(){
 
   group('GetStopAreas', () {
     final client = MockClient();
-    final apiController = ApiController();
+    final stopAreasController = StopAreasController("");
 
     test('getStopAreas - Successful Response', () async {
       // Simuler une réponse HTTP réussie
@@ -29,7 +29,7 @@ void main(){
         return http.Response(responseJson, 200);
       }));
       // Vérifier que le résultat est du type Pto et contient les données décodées
-      expect(await apiController.getStopAreas(client), isA<Pto>());
+      expect(await stopAreasController.getStopAreas(client), isA<Pto>());
       //expect(result?.example, "data");
     });
 
@@ -40,13 +40,13 @@ void main(){
       }));
 
       // Appeler la méthode à tester et vérifier qu'elle lève une exception
-      expect(apiController.getStopAreas(client), throwsException);
+      expect(stopAreasController.getStopAreas(client), throwsException);
     });
   });
 
   group('GetStopAreasByExactName', () {
     final client = MockClient();
-    final apiController = ApiController();
+    final stopAreasController = StopAreasController("");
 
     test('getStopAreasByExactName - Successful Response', () async {
       // Simuler une réponse HTTP réussie
@@ -55,8 +55,18 @@ void main(){
       }));
 
       // Vérifier que le résultat est du type Pto et contient les données décodées
-      expect(await apiController.getStopAreasByExactName(client, "Annecy"), isA<Pto>());
+      expect(await stopAreasController.getStopAreasByExactName(client, "Annecy"), isA<Pto>());
       //expect(result?.example, "data");
+    });
+
+    test('getStopAreasByExactName - Failed Response', () async {
+      // Simuler une réponse HTTP réussie
+      when(() => client.get(any(), headers: any(named: 'headers'))).thenAnswer(((_) async {
+        return http.Response('Error', 404);
+      }));
+
+      // Appeler la méthode à tester et vérifier qu'elle lève une exception
+      expect(stopAreasController.getStopAreasByExactName(client, "Annecy"), throwsException);
     });
   });
 }
